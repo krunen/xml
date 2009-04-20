@@ -25,8 +25,8 @@ sub dumptree ($tree,$indent='  ') {
 		my $i=0;
 		for $tree.list -> $v {
 			if ($v !~~ Str and ($v.list or $v.hash)) {
-				say $indent~$i~" => \{";
-				dumptree($v, $indent~'  ') if $v.WHICH != $tree.WHICH;
+				say $indent~"$i => \{";
+				dumptree($v, $indent~'  ') if $v !== $tree;
 				say "$indent\},";
 			} else {
 				say $indent~"TEXT => " ~ ($v.chars >= 60 ?? ($v.substr(0,58).subst(/\n/,' ')~"..") !! $v.subst(/\n/,' ')) ~ ",";
