@@ -1,0 +1,4 @@
+To run my simple test, do something like this:
+
+PERL6LIB=lib ../rakudo/perl6 t.pl t.xml
+
