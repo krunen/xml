@@ -8,18 +8,22 @@ rule TOP {
   $
 }
 
-token comment { '<!--' ~ '-->' $<content> = .*? }
-token pi { '<?' ~ '?>' $<content> = .*? }
+token comment { '<!--' ~ '-->' <content> }
+token pi { '<?' ~ '?>' <content> }
+token content { .*? }
 
 rule xmldecl {
    '<?xml'
-   'version'  '=' '"' $<version> = <-[\"]>+ '"'
-   'encoding' '=' '"' $<encoding> = <-[\"]>+ '"'
+   'version'  '=' '"' ~ '"' <version>
+   'encoding' '=' '"' ~ '"' <encoding>
    '?>'
 }
+token version { <-[\"]>+ }
+token encoding { <-[\"]>+ }
+token value { <-[\"]>+ }
 
 rule doctypedecl {
-  '<!DOCTYPE ' <name> $<therest> = <-[\>]>* '>'
+  '<!DOCTYPE ' <name> ~ '>' <content>
 }
 
 rule element {
@@ -30,22 +34,22 @@ rule element {
   ]
 }
 
-rule attribute { <name> '=' '"' $<value> = <-["]>* '"' }
+rule attribute {
+    <name> '=' '"' ~ '"' <value>
+}
 
 rule child {
-  [
   | <element>
   | <cdata>
   | <text=textnode>
   | <comment>
   | <pi>
-  ]
 }
 
 token cdata {
- '<![CDATA[' ~ ']]>' $<text> = .*?
+ '<![CDATA[' ~ ']]>' <content>
 }
 
 token textnode { <-[<]>+ }
-token name { <alpha><ident>+ }
+token name { <.alpha><.ident>+[:<.ident>+]? }
 
